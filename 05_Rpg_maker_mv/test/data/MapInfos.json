@@ -1,4 +1,5 @@
 [
 null,
-{"id":1,"expanded":false,"name":"들판","order":1,"parentId":0,"scrollX":1092,"scrollY":597.3333333333334}
+{"id":1,"expanded":true,"name":"실내","order":1,"parentId":0,"scrollX":1092,"scrollY":597.3333333333334},
+{"id":2,"expanded":false,"name":"실외","order":2,"parentId":0,"scrollX":1092,"scrollY":597.3333333333334}
 ]

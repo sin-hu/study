@@ -1,5 +1,18 @@
 # RPG Maker MV
-/save/
-/*.log
-/.DS_Store
+
+# Save data
+/Save/
+
+# Logs
+*.log
+
+# OS / System
+.DS_Store
+Thumbs.db
+
+# Node / Build
 /node_modules/
+
+# IDE
+.vs/
+.idea/

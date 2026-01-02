@@ -1,4 +1,5 @@
 [
 null,
-{"id":1,"battlerName":"제시_전투","characterIndex":0,"characterName":"제시_보행","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"제시_얼굴","traits":[],"initialLevel":1,"maxLevel":99,"name":"제시","nickname":"","note":"","profile":""}
+{"id":1,"battlerName":"제시_전투","characterIndex":0,"characterName":"제시_보행","classId":1,"equips":[1,1,2,3,0],"faceIndex":0,"faceName":"제시_얼굴","traits":[],"initialLevel":1,"maxLevel":99,"name":"제시","nickname":"","note":"","profile":""},
+{"id":2,"battlerName":"Actor2_8","characterIndex":0,"characterName":"$amy_보행","classId":2,"equips":[0,0,0,0,0],"faceIndex":0,"faceName":"amy_얼굴","traits":[],"initialLevel":1,"maxLevel":99,"name":"amy","nickname":"","note":"","profile":""}
 ]

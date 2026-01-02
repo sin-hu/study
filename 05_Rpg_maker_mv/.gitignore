@@ -1,0 +1,5 @@
+# RPG Maker MV
+/save/
+/*.log
+/.DS_Store
+/node_modules/

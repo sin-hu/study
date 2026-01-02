@@ -1,7 +1,5 @@
 [
 null,
-{"id":1,"animationId":6,"description":"","etypeId":1,"traits":[{"code":31,"dataId":1,"value":0},{"code":22,"dataId":0,"value":0}],"iconIndex":97,"name":"검","note":"","params":[0,0,10,0,0,0,0,0],"price":500,"wtypeId":2},
-{"id":2,"animationId":6,"description":"","etypeId":1,"traits":[{"code":31,"dataId":1,"value":0},{"code":22,"dataId":0,"value":0}],"iconIndex":99,"name":"도끼","note":"","params":[0,0,10,0,0,0,0,0],"price":500,"wtypeId":4},
-{"id":3,"animationId":1,"description":"","etypeId":1,"traits":[{"code":31,"dataId":1,"value":0},{"code":22,"dataId":0,"value":0}],"iconIndex":101,"name":"지팡이","note":"","params":[0,0,10,0,0,0,0,0],"price":500,"wtypeId":6},
-{"id":4,"animationId":11,"description":"","etypeId":1,"traits":[{"code":31,"dataId":1,"value":0},{"code":22,"dataId":0,"value":0}],"iconIndex":102,"name":"활","note":"","params":[0,0,10,0,0,0,0,0],"price":500,"wtypeId":7}
+{"id":1,"animationId":40,"description":"모든 것을 꿰뚫어보는 돋보기","etypeId":1,"traits":[{"code":31,"dataId":8,"value":0}],"iconIndex":19,"name":"돋보기","note":"","params":[0,0,500,0,0,0,0,0],"price":1000,"wtypeId":6},
+{"id":2,"animationId":16,"description":"날카로운 손톱이 생기는 글러브","etypeId":1,"traits":[{"code":31,"dataId":1,"value":0},{"code":21,"dataId":6,"value":3}],"iconIndex":106,"name":"글러브","note":"","params":[0,0,500,200,0,0,300,0],"price":500,"wtypeId":10}
 ]

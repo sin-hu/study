@@ -1,0 +1,31 @@
+# Build / Test outputs
+Game.exe
+*.exe
+*.dll
+*.pdb
+
+# Logs
+*.log
+
+# Save data
+Save/
+save/
+*.sav
+
+# Temporary / cache
+temp/
+cache/
+
+# OS / System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Node / Build
+node_modules/
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo

@@ -1,0 +1,50 @@
+{
+  "name": "loading...",
+  "version": "1.0.0",
+  "description": "Game and scripts.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ./main.js --dev",
+    "watch": "nodemon -e ts --watch ./src/**/* --exec npm run build",
+    "build": "node build.mjs",
+    "doc": "webdoc -R README.md",
+    "compile": "compile.sh",
+    "copy": "copy-project.sh",
+    "run": "run.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RPG-Paper-Maker/Game.git"
+  },
+  "author": "Wano",
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/RPG-Paper-Maker/Game/issues"
+  },
+  "homepage": "https://github.com/RPG-Paper-Maker/Game#readme",
+  "devDependencies": {
+    "@types/howler": "^2.2.1",
+    "electron": "9.4.0",
+    "nodemon": "^2.0.12",
+    "pixi-webdoc-template": "^1.1.4",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0"
+  },
+  "build": {
+    "appId": "your.id"
+  },
+  "env": {
+    "ELECTRON_NO_ASAR": null
+  },
+  "dependencies": {
+    "@types/node": "^14.14.16",
+    "@types/three": "^0.130.1",
+    "@webdoc/cli": "^1.0.0",
+    "@webdoc/model": "1.1.3",
+    "@webdoc/template-library": "1.1.3",
+    "@webdoc/types": "1.1.3",
+    "howler": "^2.2.1",
+    "npm": "^7.20.3",
+    "three": "^0.131.3"
+  }
+}

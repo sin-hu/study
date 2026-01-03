@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang='en'>
+	<head>
+		<meta charset='utf-8'>
+		<meta name='viewport' content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link rel="stylesheet" href="./Content/Styles/fonts.css">
+		<style>
+			body {
+				margin: 0;
+				padding: 0;
+				overflow: hidden;
+			}
+			#three-d {
+				margin: 0;
+				padding: 0;
+				overflow: auto;
+				position: absolute;
+			}
+			#video-container {
+				margin: 0;
+				padding: 0;
+				overflow: auto;
+				position: absolute;
+			}
+			#hud {
+				position: absolute;
+				margin: 0;
+				padding: 0;
+			}
+			#rendering {
+				display: none;
+				overflow: hidden;
+				background-color: green;
+			}
+			.hidden {
+				display: none;
+			}
+		</style>
+	</head>
+	<body>
+		<div id='three-d'></div>
+		<video id='video-container' class='hidden' height='480px'></video>
+		<canvas id='hud' width='640px' height='480px'></canvas>
+		<canvas id='rendering' width='4096px' height='4096px'></canvas>
+		<script type="module" src="./Content/Datas/Scripts/System/main.js"></script>
+	</body>
+</html>

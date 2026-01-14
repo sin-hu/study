@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class PlayerController : MonoBehaviour
 {
-    public floaat speed = 8f; //속도
+    public float speed = 8f; //속도
     public float moveableRange = 5.5f; //이동 범위 제한
 
     void Update() //update 함수: 게임 플레이중 반복 호출되는 함수
@@ -17,4 +17,4 @@ public class PlayerController : MonoBehaviour
             transform.position.x, -moveableRange, moveableRange), //x축 제한
             transform.position.y); //y축은 제한할 필요x
     }
-}
+} 

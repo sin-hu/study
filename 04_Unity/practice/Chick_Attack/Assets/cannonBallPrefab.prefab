@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8290680852309743616}
   - component: {fileID: 3388042108931984656}
   - component: {fileID: 8225997425106109774}
+  - component: {fileID: 1361784602626821040}
   m_Layer: 0
   m_Name: cannonBallPrefab
   m_TagString: Untagged
@@ -155,3 +156,16 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.5
+--- !u!114 &1361784602626821040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2748274388318247837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dd8888ff51c4b40aacafc61314f75f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryObj
+  deleteTime: 2

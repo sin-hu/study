@@ -926,7 +926,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
   speed: 8
-  moveableRange: 5.5
+  moveableRange: 10
   power: 1000
   cannonBall: {fileID: 2748274388318247837, guid: b4a5dfcb9ff1c6343bb077ee6db681ff, type: 3}
   spawnPoint: {fileID: 1828657871}

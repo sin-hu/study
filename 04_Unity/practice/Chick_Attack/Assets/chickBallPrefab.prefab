@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2894410398989581955}
   - component: {fileID: 3713070932279814126}
   - component: {fileID: 7498979825872264588}
+  - component: {fileID: 8731758625629757416}
   m_Layer: 0
   m_Name: chickBallPrefab
   m_TagString: Untagged
@@ -155,3 +156,16 @@ CircleCollider2D:
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 1.575
+--- !u!114 &8731758625629757416
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5078044346621918169}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2dd8888ff51c4b40aacafc61314f75f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DestoryObj
+  deleteTime: 10

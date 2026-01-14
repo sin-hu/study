@@ -103,3 +103,7 @@ character sprite site:opengameart.org 검색
 - 부모 이동시 자식 함께 이동
 --> 이동시 자식은 상대적 위치이므로 좌표 변경 x  
 - 자식 이동시 부모 이동 x
+
+(collider)
+- polygon collider: 오브젝터 모양 맞춰 충돌 판정 생성
+--> 일반 콜라이더보다 부담 큼. 너무 많이 사용 x

@@ -66,8 +66,6 @@ scripts(생성) 파일 - create - scripting - empty c# script
 ### console
 - 스크립트 출력문, 로그, 에러 확인창
 
-
-# 유니티 실습
 ## 이미지 구하기
 - 무료 이미지 제공 사이트  
 character sprite site:opengameart.org 검색  
@@ -108,12 +106,12 @@ character sprite site:opengameart.org 검색
 - polygon collider: 오브젝터 모양 맞춰 충돌 판정 생성  
 --> 일반 콜라이더보다 부담 큼. 너무 많이 사용 x  
   
-(함수)
+## 함수
 - start 함수: 게임 실행시 맨 처음 단 한번만 실행 --> 게임 설정
 - update 함수: 게임 실행 후 매 프레임마다 반복 실행 --> 반복 기능
 - 오브젝트에 어태치시 선언한 변수 컴포넌트에 등록됨 (수정 가능) **  
   
-(프리팹)
+## 프리팹
 - 하이어라키 창에서 프로젝트 창으로 끌어들이면 생성 가능
 - 프리팹으로 생성한 오브젝트를 인스턴스라 함
 - 프리팹은 하이어라키 창에 없어도 스크립트로 생성 가능  
@@ -122,17 +120,74 @@ character sprite site:opengameart.org 검색
 - 인스턴스 변경시는 개별 인스턴스만 변경됨 (하이어라키 창에서)  
 --> overrides 시에는 개별 인스턴스 변경이 프리팹에 반영o
   
-(UI)  
+## UI
 :유저 인터페이스  
 - 화면에 표시할 메시지나 버튼 등
+
+### 주요 UI 오브젝트
+1. text
+- 점수 표시로 주로 사용
+- TextMesh Pro(TMP) :text보다 상위 오브젝트 --> 확대시 깔끔, 문자에 빛 비추기 등 표현 가능
+
+2. Image
+- Raw Image :텍스처 이미지 표시
+
+3. Button
+- 클릭시 지정한 함수 호출 가능
+- 게임 시작 버튼으로 주로 사용
+- Text를 자식 오브젝트로 가짐
+- 이미지 활용해 다양한 모양 버튼 생성 가능  
+
+4. 그 외
+![alt text](ui.jpg)
+
+#### 컴포넌트
+- Normal Color :아무 상호작용 없는 평상시 상태
+- Highlighted Color :마우스를 올렸을때 색상
+- Pressed Color :클릭 했을때 색상
+- Disable Color :비활성 상태 색상  
   
-(canvas)  
+- Transition -Sprite Swap :사용자 입력에 따라 버튼 이미지 변경  
+
+### canvas  
 - UI 오브젝트 배치하는 영역
 - 크기는 게임뷰에 비례
 - 2D, 3D 구분없이 사용
 - 카메라, 빛의 영향 받지 않음
 - 씬 뷰에서 크게 표시됨 --> 크게 표시된 캔버스 왼쪽 아래에 게임화면 표시됨
+- 같은 canvas에서 여러 UI가 있는 경우, 하이어라키 창에서 아래쪽일 수록 앞에 배치  
+ex) canvas  
+     -button  
+     -text  
+--> text가 맨앞, button이 그 뒤에 표시됨
+
+- 모든 UI 오브젝트는 canvas의 자식
+- UI 오브젝트가 자식을 가질시, 그 오브젝트가 자식의 캔버스 역할을 함  
+
+#### --컴포넌트--
 - Render Mode :canvas 컴포넌트
---> Screen Space -overlay :UI가 가장 앞쪽에 표시됨
+--> Screen Space -overlay :UI가 가장 앞쪽에 표시됨  
+![alt text](sso.jpg)
 --> Screen Space -Camera :씬 표시 카메라 외에 UI 표시 카메라 추가 가능 --> 각 카메라 순서 조절하여 오브젝트가 UI 앞에 오기 가능
---> World Space :canvas 위치, 크기 자유롭게 설정 가능 --> 이름, 체력바 등 활용
+![alt text](ssc.jpg)
+--> World Space :canvas 위치, 크기 자유롭게 설정 가능 --> 이름, 체력바 등 활용  
+![alt text](ws.jpg)  
+
+- UI Scale Mode :UI 오브젝트 크기 조절  
+--> Constant Pixel Size :픽셀 크기로 지정  
+--> Scale With Screen Size :스크린 크기에 맞춰 조절  
+--> Constant Physical Size :실제 물리적 크기로 조절  
+
+- Rect Transform  
+--> 다른 오브젝트의 transform과 같은 것  
+--> scale은 width와 height의 비율  
+  
+- Anchor :canvas 위치 고정 (기준점)  
+--> stretch모드 :앵커를 상하좌우로 나누어 배치 =앵커 여러개 배치 가능 /but, UI 깨질 위험 큼  
+- Pivot :UI 오브젝트의 기준되는 점  
+  
+### EventSystem
+: UI와 관련된 인풋 관리 오브젝트
+- UI 관련 스크립트 처리
+- 절대 제거x --> 제거시 눌러도 반응x
+

@@ -198,3 +198,14 @@ ex) canvas
 
 ## sky box
 - 반구형 돔 모양
+
+## light
+1. spotlight :특정 오브젝트, 장소 밝히기
+- intensity :빛이 얼마나 밝은가(센가)
+- spot angle --> 유니티6에서는 inner/outer spot으로 변경 :내/외부 빛이 도달하는 거리  
+- inner join :빛이 100% 도달하는 범위  
+- outer join :빛이 도달하는 최외곽 범위
+
+2. point light :전구처럼 특정 광원에서 주변을 비추는 빛
+- 방의 조명, 횃불 등으로 응용
+- but, 처리가 무겁다

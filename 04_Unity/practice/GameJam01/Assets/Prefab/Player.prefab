@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5793357988958670903
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 876224391769568643}
+  m_Layer: 0
+  m_Name: GroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &876224391769568643
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5793357988958670903}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.703, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 534998489250554384}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7343513162097213253
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,6 +44,7 @@ GameObject:
   - component: {fileID: 5520036358707861171}
   - component: {fileID: 5449130893826062886}
   - component: {fileID: 5281103727232600072}
+  - component: {fileID: 5944213212671934111}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -32,7 +64,8 @@ Transform:
   m_LocalPosition: {x: -7.89, y: 0.92, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 876224391769568643}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3878528100984095402
@@ -173,3 +206,36 @@ MonoBehaviour:
   slotManager: {fileID: 0}
   actionButton: {fileID: 0}
   targetButton: {fileID: 0}
+--- !u!114 &5944213212671934111
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7343513162097213253}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd46cf724bb9e6e41875688b836b04c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  moveSpeed: 7
+  jumpForce: 6
+  dashSpeed: 18
+  dashDuration: 0.2
+  dashCooldown: 1
+  groundCheck: {fileID: 876224391769568643}
+  checkRadius: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  idleFront: {fileID: -7660334530109778554, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  idleBack: {fileID: -3958789570995150529, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  idleLeft: {fileID: -8853348817167264249, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  idleRight: {fileID: -5693647816405048713, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  walkFront: {fileID: -6632303970494876763, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  walkBack: {fileID: -6722581597579397135, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  walkLeft: {fileID: -4095640107860206871, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  walkRight: {fileID: -2873069442875516982, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  dashLeft: {fileID: 4541769896961167762, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  dashRight: {fileID: -7441418473639337193, guid: 275e41cc11be6f84bba91266cd98f1ea, type: 3}
+  animationSpeed: 0.2

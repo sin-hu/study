@@ -1,79 +1,140 @@
 using UnityEngine;
-using UnityEngine.UI; // 버튼(Button) 컴포넌트를 제어하기 위해 필수입니다.
+using UnityEngine.UI;
+using System.Collections;
+using System.Collections.Generic;
 
 public class BattleManager : MonoBehaviour
 {
-    [Header("전투 설정")]
-    public float detectRange = 5f;      // 적을 감지할 사거리
-    public SlotManager slotManager;    // 하이어라키의 SlotMachine 오브젝트 연결
+    [Header("플레이어 설정")]
+    public GameObject heartPrefab;
+    public Transform playerHeartParent; // 왼쪽 상단 그룹
+    public int playerMaxHP = 5;
+    private List<Image> playerHeartImages = new List<Image>();
+    private int playerHP;
+    [HideInInspector] public bool isPlayerDefending = false;
 
-    [Header("UI 버튼 연결")]
+    [Header("전투 설정")]
+    public float detectRange = 5f;
+    public float jumpForce = 5f;
     public Button actionButton;        
     public Button targetButton;        
 
     private bool isEnemyInRange = false;
+    private Rigidbody2D rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        SpawnPlayerHearts();
+        SetButtonsInteractable(false);
+    }
+
+    void SpawnPlayerHearts()
+    {
+        playerHP = playerMaxHP;
+        for (int i = 0; i < playerMaxHP; i++)
+        {
+            GameObject newHeart = Instantiate(heartPrefab, playerHeartParent);
+            Image img = newHeart.GetComponent<Image>();
+            if (img != null) playerHeartImages.Add(img);
+        }
+    }
 
     void Update()
     {
-        // 1. 우선 씬 안에 "Enemy" 태그를 가진 오브젝트가 있는지 찾습니다.
-        GameObject[] enemies;
-        
-        try {
-            enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        } catch {
-            // 유니티 에디터에 'Enemy' 태그 자체가 등록되지 않았을 경우를 대비한 안전장치
-            SetButtonsInteractable(false);
-            return;
-        }
-
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         bool found = false;
-
-        // 2. 적이 한 명이라도 있을 때만 거리 계산을 수행합니다.
-        if (enemies.Length > 0)
+        foreach (GameObject enemy in enemies)
         {
-            foreach (GameObject enemy in enemies)
+            if (enemy != null && Vector2.Distance(transform.position, enemy.transform.position) <= detectRange)
             {
-                if (enemy == null) continue; // 파괴된 적 오브젝트 예외 처리
-
-                float distance = Vector2.Distance(transform.position, enemy.transform.position);
-                
-                if (distance <= detectRange)
-                {
-                    found = true;
-                    break; // 사거리 내 적 발견 시 루프 종료
-                }
+                found = true;
+                break;
             }
         }
-
-        // 3. 상태 변화에 따른 버튼 활성화/비활성화 처리
-        // found가 true이면 사거리 내 적이 있음, false이면 적이 없거나 멀리 있음
-        if (found && !isEnemyInRange)
-        {
-            isEnemyInRange = true;
-            SetButtonsInteractable(true);
-            Debug.Log("적이 사거리 내 진입! 슬롯 활성화.");
-        }
-        else if (!found && isEnemyInRange)
-        {
-            isEnemyInRange = false;
-            SetButtonsInteractable(false);
-            Debug.Log("사거리 내에 적이 없습니다. 슬롯 비활성화.");
-        }
+        if (found && !isEnemyInRange) { isEnemyInRange = true; SetButtonsInteractable(true); }
+        else if (!found && isEnemyInRange) { isEnemyInRange = false; SetButtonsInteractable(false); }
     }
 
-    /// <summary>
-    /// 슬롯 버튼들의 활성화 상태를 조절합니다.
-    /// </summary>
-    void SetButtonsInteractable(bool state)
+    public void ExecuteResult(string action, string targetName)
     {
-        if (actionButton != null) actionButton.interactable = state;
-        if (targetButton != null) targetButton.interactable = state;
+        GameObject enemy = GameObject.FindWithTag("Enemy");
+
+        // 새로운 행동 시작 시 내 방어 상태 해제 (색상 복구)
+        if (action != "DEFEND") ResetPlayerDefense();
+
+        if (action == "ATTACK")
+        {
+            if (targetName == "YOU") { if (enemy != null) StartCoroutine(AttackJumpRoutine(enemy)); else EndTurn(); }
+            else { PlayerTakeDamage(); StartCoroutine(GetHitVisual(gameObject, Color.red)); }
+        }
+        else if (action == "DEFEND")
+        {
+            if (targetName == "YOU" && enemy != null) 
+            {
+                EnemyHP ehp = enemy.GetComponent<EnemyHP>();
+                if(ehp != null) { ehp.isDefending = true; enemy.GetComponent<SpriteRenderer>().color = Color.cyan; }
+            }
+            else 
+            {
+                isPlayerDefending = true;
+                GetComponent<SpriteRenderer>().color = Color.cyan;
+            }
+            EndTurn();
+        }
+        else { EndTurn(); }
     }
 
-    // 사거리 시각화
-    private void OnDrawGizmosSelected()
+    void PlayerTakeDamage()
     {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, detectRange);
+        if (isPlayerDefending) { ResetPlayerDefense(); return; }
+
+        playerHP--;
+        if (playerHP >= 0 && playerHP < playerHeartImages.Count)
+        {
+            Color c = playerHeartImages[playerHP].color;
+            c.a = 0.2f;
+            playerHeartImages[playerHP].color = c;
+        }
     }
+
+    void ResetPlayerDefense()
+    {
+        isPlayerDefending = false;
+        GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    IEnumerator AttackJumpRoutine(GameObject enemy)
+    {
+        if (rb != null) rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        yield return new WaitForSeconds(0.2f);
+        
+        EnemyHP hp = enemy.GetComponent<EnemyHP>();
+        if (hp != null) hp.TakeDamage();
+
+        yield return StartCoroutine(GetHitVisual(enemy, Color.red));
+    }
+
+    IEnumerator GetHitVisual(GameObject target, Color flashColor)
+    {
+        SpriteRenderer sr = target.GetComponent<SpriteRenderer>();
+        EnemyHP enemyHP = target.GetComponent<EnemyHP>();
+        
+        // 방어 중인지 체크 (적 혹은 플레이어)
+        bool currentlyDefending = (enemyHP != null) ? enemyHP.isDefending : isPlayerDefending;
+
+        if (sr != null && !currentlyDefending)
+        {
+            sr.color = flashColor;
+            yield return new WaitForSeconds(0.3f);
+            sr.color = Color.white;
+        }
+        else { yield return new WaitForSeconds(0.3f); }
+        
+        EndTurn();
+    }
+
+    void EndTurn() { SlotManager sm = Object.FindAnyObjectByType<SlotManager>(); if (sm != null) sm.ResetSlots(); ResetButtons(); }
+    void ResetButtons() { if (isEnemyInRange) SetButtonsInteractable(true); }
+    public void SetButtonsInteractable(bool state) { if (actionButton != null) actionButton.interactable = state; if (targetButton != null) targetButton.interactable = state; }
 }

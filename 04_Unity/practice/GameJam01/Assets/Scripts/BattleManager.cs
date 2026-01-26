@@ -8,7 +8,6 @@ public class BattleManager : MonoBehaviour
     public SlotManager slotManager;    // 하이어라키의 SlotMachine 오브젝트 연결
 
     [Header("UI 버튼 연결")]
-    // SlotMachine 자식인 ActionSlot과 TargetSlot을 각각 드래그해서 연결하세요.
     public Button actionButton;        
     public Button targetButton;        
 
@@ -16,40 +15,54 @@ public class BattleManager : MonoBehaviour
 
     void Update()
     {
-        // 1. 씬 내의 'Enemy' 태그를 가진 모든 적을 찾습니다.
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        // 1. 우선 씬 안에 "Enemy" 태그를 가진 오브젝트가 있는지 찾습니다.
+        GameObject[] enemies;
+        
+        try {
+            enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        } catch {
+            // 유니티 에디터에 'Enemy' 태그 자체가 등록되지 않았을 경우를 대비한 안전장치
+            SetButtonsInteractable(false);
+            return;
+        }
+
         bool found = false;
 
-        foreach (GameObject enemy in enemies)
+        // 2. 적이 한 명이라도 있을 때만 거리 계산을 수행합니다.
+        if (enemies.Length > 0)
         {
-            // 2. Player와 적 사이의 거리를 계산합니다.
-            float distance = Vector2.Distance(transform.position, enemy.transform.position);
-            
-            if (distance <= detectRange)
+            foreach (GameObject enemy in enemies)
             {
-                found = true;
-                break; // 한 명이라도 사거리 안에 있으면 루프 종료
+                if (enemy == null) continue; // 파괴된 적 오브젝트 예외 처리
+
+                float distance = Vector2.Distance(transform.position, enemy.transform.position);
+                
+                if (distance <= detectRange)
+                {
+                    found = true;
+                    break; // 사거리 내 적 발견 시 루프 종료
+                }
             }
         }
 
-        // 3. 적이 사거리 안에 들어왔을 때 처리
+        // 3. 상태 변화에 따른 버튼 활성화/비활성화 처리
+        // found가 true이면 사거리 내 적이 있음, false이면 적이 없거나 멀리 있음
         if (found && !isEnemyInRange)
         {
             isEnemyInRange = true;
-            SetButtonsInteractable(true); // 버튼 클릭 가능하게 활성화
-            Debug.Log("적이 사거리 내 진입! 이제 슬롯을 클릭할 수 있습니다.");
+            SetButtonsInteractable(true);
+            Debug.Log("적이 사거리 내 진입! 슬롯 활성화.");
         }
-        // 4. 적이 사거리 밖으로 나갔을 때 처리
         else if (!found && isEnemyInRange)
         {
             isEnemyInRange = false;
-            SetButtonsInteractable(false); // 버튼 클릭 비활성화
-            Debug.Log("적이 사거리 밖으로 나갔습니다. 슬롯이 잠깁니다.");
+            SetButtonsInteractable(false);
+            Debug.Log("사거리 내에 적이 없습니다. 슬롯 비활성화.");
         }
     }
 
     /// <summary>
-    /// 슬롯 버튼들의 활성화 상태를 한꺼번에 조절하는 함수입니다.
+    /// 슬롯 버튼들의 활성화 상태를 조절합니다.
     /// </summary>
     void SetButtonsInteractable(bool state)
     {
@@ -57,7 +70,7 @@ public class BattleManager : MonoBehaviour
         if (targetButton != null) targetButton.interactable = state;
     }
 
-    // 사거리를 Scene 뷰에서 시각적으로 확인하기 위한 기즈모
+    // 사거리 시각화
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;

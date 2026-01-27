@@ -2,12 +2,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement; 
 
 public class BattleManager : MonoBehaviour
 {
-    [Header("플레이어 설정")]
+    [Header("플레이어 오브젝트 설정")]
+    public GameObject normalPlayer;
+
+    [Header("KISS 이미지")]
+    public Sprite kissSprite;
+    private Sprite originalSprite;
+
+    [Header("하트 UI 설정")]
     public GameObject heartPrefab;
-    public Transform playerHeartParent; // 왼쪽 상단 그룹
+    public Transform playerHeartParent;
     public int playerMaxHP = 5;
     private List<Image> playerHeartImages = new List<Image>();
     private int playerHP;
@@ -16,15 +24,24 @@ public class BattleManager : MonoBehaviour
     [Header("전투 설정")]
     public float detectRange = 5f;
     public float jumpForce = 5f;
-    public Button actionButton;        
-    public Button targetButton;        
+    public Button actionButton;
+    public Button targetButton;
 
     private bool isEnemyInRange = false;
     private Rigidbody2D rb;
+    private Coroutine activeRoutine;
+
+    Color defendBlue = new Color(0f, 0.4f, 1f, 1f);
+    Color friendYellow = new Color(1f, 0.9f, 0f, 1f);
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        if (normalPlayer != null)
+            originalSprite = normalPlayer.GetComponent<SpriteRenderer>().sprite;
+
+        ResetVisual();
         SpawnPlayerHearts();
         SetButtonsInteractable(false);
     }
@@ -32,109 +49,215 @@ public class BattleManager : MonoBehaviour
     void SpawnPlayerHearts()
     {
         playerHP = playerMaxHP;
+        foreach (Transform child in playerHeartParent) Destroy(child.gameObject);
+        playerHeartImages.Clear();
+
         for (int i = 0; i < playerMaxHP; i++)
         {
-            GameObject newHeart = Instantiate(heartPrefab, playerHeartParent);
-            Image img = newHeart.GetComponent<Image>();
-            if (img != null) playerHeartImages.Add(img);
+            GameObject h = Instantiate(heartPrefab, playerHeartParent);
+            playerHeartImages.Add(h.GetComponent<Image>());
         }
     }
 
     void Update()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        bool found = false;
-        foreach (GameObject enemy in enemies)
+        GameObject enemy = GameObject.FindWithTag("Enemy");
+        bool found = enemy != null && Vector2.Distance(transform.position, enemy.transform.position) <= detectRange;
+
+        if (found)
         {
-            if (enemy != null && Vector2.Distance(transform.position, enemy.transform.position) <= detectRange)
-            {
-                found = true;
-                break;
-            }
+            EnemyHP ehp = enemy.GetComponent<EnemyHP>();
+            if (ehp != null) ehp.ShowUI();
         }
-        if (found && !isEnemyInRange) { isEnemyInRange = true; SetButtonsInteractable(true); }
-        else if (!found && isEnemyInRange) { isEnemyInRange = false; SetButtonsInteractable(false); }
+
+        if (found && !isEnemyInRange)
+        {
+            isEnemyInRange = true;
+            SetButtonsInteractable(true);
+        }
+        else if (!found && isEnemyInRange)
+        {
+            isEnemyInRange = false;
+            SetButtonsInteractable(false);
+        }
     }
 
     public void ExecuteResult(string action, string targetName)
     {
+        if (activeRoutine != null) StopCoroutine(activeRoutine);
+
         GameObject enemy = GameObject.FindWithTag("Enemy");
-
-        // 새로운 행동 시작 시 내 방어 상태 해제 (색상 복구)
-        if (action != "DEFEND") ResetPlayerDefense();
-
-        if (action == "ATTACK")
-        {
-            if (targetName == "YOU") { if (enemy != null) StartCoroutine(AttackJumpRoutine(enemy)); else EndTurn(); }
-            else { PlayerTakeDamage(); StartCoroutine(GetHitVisual(gameObject, Color.red)); }
-        }
-        else if (action == "DEFEND")
-        {
-            if (targetName == "YOU" && enemy != null) 
-            {
-                EnemyHP ehp = enemy.GetComponent<EnemyHP>();
-                if(ehp != null) { ehp.isDefending = true; enemy.GetComponent<SpriteRenderer>().color = Color.cyan; }
-            }
-            else 
-            {
-                isPlayerDefending = true;
-                GetComponent<SpriteRenderer>().color = Color.cyan;
-            }
-            EndTurn();
-        }
-        else { EndTurn(); }
+        activeRoutine = StartCoroutine(HandleAction(action, targetName, enemy));
     }
 
-    void PlayerTakeDamage()
+    IEnumerator HandleAction(string action, string targetName, GameObject enemy)
     {
-        if (isPlayerDefending) { ResetPlayerDefense(); return; }
+        ResetVisual();
 
-        playerHP--;
-        if (playerHP >= 0 && playerHP < playerHeartImages.Count)
+        switch (action)
         {
-            Color c = playerHeartImages[playerHP].color;
-            c.a = 0.2f;
-            playerHeartImages[playerHP].color = c;
+            case "ATTACK":
+                if (targetName == "YOU" && enemy != null)
+                    yield return StartCoroutine(AttackJumpRoutine(enemy));
+                else
+                {
+                    PlayerTakeDamage(1);
+                    yield return StartCoroutine(FlashColor(normalPlayer, Color.red));
+                }
+                break;
+
+            case "DEFEND":
+                if (targetName == "YOU" && enemy != null)
+                {
+                    enemy.GetComponent<SpriteRenderer>().color = defendBlue;
+                    enemy.GetComponent<EnemyHP>().SetDefense(true);
+                }
+                else
+                {
+                    isPlayerDefending = true;
+                    normalPlayer.GetComponent<SpriteRenderer>().color = defendBlue;
+                }
+
+                yield return new WaitForSeconds(0.01f);
+                EndTurn();
+                break;
+
+            case "KISS":
+                yield return StartCoroutine(KissRoutine(enemy, targetName));
+                break;
+
+            case "FRIEND":
+                yield return StartCoroutine(FriendFlash(enemy));
+                break;
         }
+
+        activeRoutine = null;
     }
 
-    void ResetPlayerDefense()
+    IEnumerator FriendFlash(GameObject enemy)
+    {
+        SpriteRenderer psr = normalPlayer.GetComponent<SpriteRenderer>();
+        SpriteRenderer esr = enemy != null ? enemy.GetComponent<SpriteRenderer>() : null;
+
+        psr.color = friendYellow;
+        if (esr != null) esr.color = friendYellow;
+
+        HealPlayer(1);
+        if (enemy != null) enemy.GetComponent<EnemyHP>().Heal(1);
+
+        yield return new WaitForSeconds(0.15f);
+
+        psr.color = Color.white;
+        if (esr != null) esr.color = Color.white;
+
+        EndTurn();
+    }
+
+    IEnumerator KissRoutine(GameObject enemy, string targetName)
+    {
+        if (kissSprite != null)
+            normalPlayer.GetComponent<SpriteRenderer>().sprite = kissSprite;
+
+        yield return new WaitForSeconds(0.6f);
+
+        if (targetName == "YOU" && enemy != null)
+        {
+            enemy.GetComponent<EnemyHP>().TakeDamage(2);
+            yield return StartCoroutine(FlashColor(enemy, Color.red));
+        }
+        else
+        {
+            PlayerTakeDamage(2);
+            yield return StartCoroutine(FlashColor(normalPlayer, Color.red));
+        }
+
+        ResetVisual();
+    }
+
+    void ResetVisual()
     {
         isPlayerDefending = false;
-        GetComponent<SpriteRenderer>().color = Color.white;
+
+        SpriteRenderer sr = normalPlayer.GetComponent<SpriteRenderer>();
+        sr.sprite = originalSprite;
+        sr.color = Color.white;
+    }
+
+    // ⭐ 이 부분이 수정되었습니다.
+    public void PlayerTakeDamage(int amount)
+    {
+        // 1. 방어 상태라면 데미지를 입지 않고 방어막만 해제한 뒤 바로 종료합니다.
+        if (isPlayerDefending) 
+        {
+            ResetVisual(); // 방어 해제 및 색상 복구
+            return;        // 여기서 함수를 끝내야 아래 피 깎는 코드가 실행되지 않습니다.
+        }
+
+        // 2. 방어 상태가 아닐 때만 아래 코드가 실행되어 피가 깎입니다.
+        for (int i = 0; i < amount; i++)
+        {
+            playerHP--;
+            if (playerHP >= 0 && playerHP < playerHeartImages.Count)
+            {
+                Color c = playerHeartImages[playerHP].color;
+                c.a = 0.2f;
+                playerHeartImages[playerHP].color = c;
+            }
+        }
+
+        if (playerHP <= 0)
+        {
+            SceneManager.LoadScene("Stage0");
+        }
+    }
+
+    public void HealPlayer(int amount)
+    {
+        for (int i = 0; i < amount; i++)
+        {
+            if (playerHP < playerMaxHP)
+            {
+                Color c = playerHeartImages[playerHP].color;
+                c.a = 1f;
+                playerHeartImages[playerHP].color = c;
+                playerHP++;
+            }
+        }
     }
 
     IEnumerator AttackJumpRoutine(GameObject enemy)
     {
-        if (rb != null) rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
-        yield return new WaitForSeconds(0.2f);
-        
-        EnemyHP hp = enemy.GetComponent<EnemyHP>();
-        if (hp != null) hp.TakeDamage();
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
 
-        yield return StartCoroutine(GetHitVisual(enemy, Color.red));
+        yield return new WaitForSeconds(0.2f);
+
+        enemy.GetComponent<EnemyHP>().TakeDamage(1);
+
+        yield return StartCoroutine(FlashColor(enemy, Color.red));
     }
 
-    IEnumerator GetHitVisual(GameObject target, Color flashColor)
+    IEnumerator FlashColor(GameObject t, Color c)
     {
-        SpriteRenderer sr = target.GetComponent<SpriteRenderer>();
-        EnemyHP enemyHP = target.GetComponent<EnemyHP>();
-        
-        // 방어 중인지 체크 (적 혹은 플레이어)
-        bool currentlyDefending = (enemyHP != null) ? enemyHP.isDefending : isPlayerDefending;
+        SpriteRenderer sr = t.GetComponent<SpriteRenderer>();
 
-        if (sr != null && !currentlyDefending)
-        {
-            sr.color = flashColor;
-            yield return new WaitForSeconds(0.3f);
-            sr.color = Color.white;
-        }
-        else { yield return new WaitForSeconds(0.3f); }
-        
+        sr.color = c;
+        yield return new WaitForSeconds(0.3f);
+        sr.color = Color.white;
+
         EndTurn();
     }
 
-    void EndTurn() { SlotManager sm = Object.FindAnyObjectByType<SlotManager>(); if (sm != null) sm.ResetSlots(); ResetButtons(); }
-    void ResetButtons() { if (isEnemyInRange) SetButtonsInteractable(true); }
-    public void SetButtonsInteractable(bool state) { if (actionButton != null) actionButton.interactable = state; if (targetButton != null) targetButton.interactable = state; }
+    void EndTurn()
+    {
+        SlotManager sm = Object.FindAnyObjectByType<SlotManager>();
+        if (sm != null) sm.ResetSlots();
+
+        if (isEnemyInRange) SetButtonsInteractable(true);
+    }
+
+    public void SetButtonsInteractable(bool s)
+    {
+        actionButton.interactable = s;
+        targetButton.interactable = s;
+    }
 }

@@ -1,44 +1,52 @@
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI; // 버튼 제어를 위해 필수
+using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public class SlotManager : MonoBehaviour
 {
-    [Header("UI 텍스트 연결")]
-    public TextMeshProUGUI actionText;
-    public TextMeshProUGUI targetText;
+    [Header("슬롯머신 본체 설정")]
+    public Image slotMachineBody;
+    public Sprite idleSprite;      // 슬롯머신_0
+    public Sprite spinningSprite;  // 슬롯머신_2
 
-    [Header("슬롯 버튼 자체를 연결")]
-    public Button actionSlotButton; // 액션 슬롯 버튼
-    public Button targetSlotButton; // 타겟 슬롯 버튼
+    [Header("슬롯 아이콘 연결")]
+    public Image actionSlotImage;
+    public Image targetSlotImage;
 
-    private string[] actions = { "ATTACK", "DEFEND", "JOKE" };
-    private string[] targets = { "YOU", "ME" };
+    [Header("슬롯 아이콘 리스트")]
+    // 순서: 0:공격, 1:방어, 2:뽀뽀, 3:친구맺기, 4:너, 5:나
+    public List<Sprite> slotSprites; 
+
+    [Header("슬롯 버튼 연결")]
+    public Button actionSlotButton; 
+    public Button targetSlotButton; 
 
     private bool isActionSpinning = false;
     private bool isTargetSpinning = false;
     private bool actionSelected = false;
     private bool targetSelected = false;
 
+    private string finalAction;
+    private string finalTarget;
+
     public void ResetSlots()
     {
-        actionText.text = "ATTACK";
-        targetText.text = "TARGET";
+        // 초기화 시 기본 아이콘 (예: 공격 또는 별도의 초기 이미지)
+        actionSlotImage.sprite = slotSprites[0];
+        targetSlotImage.sprite = slotSprites[4]; // '너'
+        slotMachineBody.sprite = idleSprite;
+
         actionSelected = false;
         targetSelected = false;
 
-        // 연출이 끝났으니 다시 버튼을 누를 수 있게 활성화
         if (actionSlotButton != null) actionSlotButton.interactable = true;
         if (targetSlotButton != null) targetSlotButton.interactable = true;
     }
 
     public void OnClickActionSlot()
     {
-        // 돌아가는 중이 아닐 때만 실행
-        if (!isActionSpinning) 
-        {
-            // 누르자마자 버튼 비활성화 (중복 클릭 원천 봉쇄)
+        if (!isActionSpinning) {
             if (actionSlotButton != null) actionSlotButton.interactable = false;
             StartCoroutine(ActionSpinRoutine());
         }
@@ -46,9 +54,7 @@ public class SlotManager : MonoBehaviour
 
     public void OnClickTargetSlot()
     {
-        if (!isTargetSpinning)
-        {
-            // 누르자마자 버튼 비활성화 (중복 클릭 원천 봉쇄)
+        if (!isTargetSpinning) {
             if (targetSlotButton != null) targetSlotButton.interactable = false;
             StartCoroutine(TargetSpinRoutine());
         }
@@ -58,11 +64,19 @@ public class SlotManager : MonoBehaviour
     {
         isActionSpinning = true;
         actionSelected = true;
+        slotMachineBody.sprite = spinningSprite;
+
         float duration = 1.0f;
         float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            actionText.text = actions[Random.Range(0, actions.Length)];
+        while (elapsed < duration) {
+            int rand = Random.Range(0, 4); // 0(공격), 1(방어), 2(뽀뽀), 3(친구)
+            actionSlotImage.sprite = slotSprites[rand];
+            
+            if (rand == 0) finalAction = "ATTACK";
+            else if (rand == 1) finalAction = "DEFEND";
+            else if (rand == 2) finalAction = "KISS";
+            else if (rand == 3) finalAction = "FRIEND";
+
             elapsed += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
@@ -74,11 +88,15 @@ public class SlotManager : MonoBehaviour
     {
         isTargetSpinning = true;
         targetSelected = true;
+        slotMachineBody.sprite = spinningSprite;
+
         float duration = 1.0f;
         float elapsed = 0f;
-        while (elapsed < duration)
-        {
-            targetText.text = targets[Random.Range(0, targets.Length)];
+        while (elapsed < duration) {
+            int rand = Random.Range(4, 6); // 4(너), 5(나)
+            targetSlotImage.sprite = slotSprites[rand];
+            finalTarget = (rand == 4) ? "YOU" : "ME";
+
             elapsed += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
@@ -88,14 +106,11 @@ public class SlotManager : MonoBehaviour
 
     void CheckResults()
     {
-        if (!isActionSpinning && !isTargetSpinning && actionSelected && targetSelected)
-        {
-            BattleManager battleManager = Object.FindAnyObjectByType<BattleManager>();
-            if (battleManager != null)
-            {
-                // 하단의 실행 버튼들도 잠금
-                battleManager.SetButtonsInteractable(false);
-                battleManager.ExecuteResult(actionText.text, targetText.text);
+        if (!isActionSpinning && !isTargetSpinning) {
+            slotMachineBody.sprite = idleSprite; 
+            if (actionSelected && targetSelected) {
+                BattleManager bm = Object.FindAnyObjectByType<BattleManager>();
+                if (bm != null) bm.ExecuteResult(finalAction, finalTarget);
             }
         }
     }

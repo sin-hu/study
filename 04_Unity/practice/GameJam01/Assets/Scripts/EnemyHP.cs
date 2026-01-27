@@ -1,13 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
-using System.Collections.Generic;
+using TMPro;
 using System.Collections;
+using System.Collections.Generic;
 
 public class EnemyHP : MonoBehaviour
 {
-    [Header("HP UI")]
+    [Header("UI 연결")]
+    public GameObject statusUIRoot;   // EnemyStatus_Root (부모)
     public GameObject heartPrefab;    
-    public Transform heartParent;     // EnemyHP_Group 연결
+    public Transform heartParent;     
+    public TextMeshProUGUI nameText;  
+    public SpriteRenderer characterSprite; // 물범 이미지
+
+    [Header("적 설정")]
+    public string enemyName = "물범";
     public int maxHP = 5;
 
     private List<Image> heartImages = new List<Image>();
@@ -18,6 +25,10 @@ public class EnemyHP : MonoBehaviour
 
     void Start()
     {
+        // 처음에는 UI를 숨김
+        if (statusUIRoot != null) statusUIRoot.SetActive(false);
+        if (nameText != null) nameText.text = enemyName;
+
         foreach (Transform child in heartParent) { Destroy(child.gameObject); }
         currentHP = maxHP;
         SpawnHearts();
@@ -28,44 +39,78 @@ public class EnemyHP : MonoBehaviour
         for (int i = 0; i < maxHP; i++)
         {
             GameObject newHeart = Instantiate(heartPrefab, heartParent);
-            // 중요: 생성 시 크기가 0이 되지 않도록 1로 고정
             newHeart.transform.localScale = Vector3.one; 
-            
             Image img = newHeart.GetComponent<Image>();
             if (img != null) heartImages.Add(img);
         }
-        // 오른쪽 하트부터 깎이도록 리스트 반전
         heartImages.Reverse();
     }
 
-    public bool TakeDamage()
+    // 전투 시작 시 호출
+    public void ShowUI() { if (statusUIRoot != null) statusUIRoot.SetActive(true); }
+
+    public bool TakeDamage(int amount)
     {
         if (isDead) return true;
 
         if (isDefending)
         {
-            isDefending = false;
-            GetComponent<SpriteRenderer>().color = Color.white; 
+            SetDefense(false); // 방어 해제
             return false;
         }
 
-        currentHP--;
-        
-        if (currentHP >= 0 && currentHP < heartImages.Count)
+        for (int i = 0; i < amount; i++)
         {
-            int index = (heartImages.Count - 1) - currentHP;
-            Color c = heartImages[index].color;
-            c.a = 0.2f; 
-            heartImages[index].color = c;
+            currentHP--;
+            if (currentHP >= 0 && currentHP < heartImages.Count)
+            {
+                int index = (heartImages.Count - 1) - currentHP;
+                Color c = heartImages[index].color;
+                c.a = 0.2f;
+                heartImages[index].color = c;
+            }
         }
+        
+        StartCoroutine(FlashColor(Color.red)); // 빨간색 피격 효과
         
         if (currentHP <= 0)
         {
             isDead = true;
+            if (statusUIRoot != null) statusUIRoot.SetActive(false);
             StartCoroutine(FlyAwayRoutine());
         }
-        
         return isDead;
+    }
+
+    public void Heal(int amount)
+    {
+        if (isDead) return;
+        for (int i = 0; i < amount; i++)
+        {
+            if (currentHP < maxHP)
+            {
+                int index = (heartImages.Count - 1) - currentHP;
+                Color c = heartImages[index].color;
+                c.a = 1.0f;
+                heartImages[index].color = c;
+                currentHP++;
+            }
+        }
+        StartCoroutine(FlashColor(Color.yellow)); // 친구맺기 노란색 효과
+    }
+
+    public void SetDefense(bool state)
+    {
+        isDefending = state;
+        characterSprite.color = state ? new Color(0.5f, 0.5f, 1f) : Color.white; // 파란색 방어
+    }
+
+    IEnumerator FlashColor(Color targetColor)
+    {
+        characterSprite.color = targetColor;
+        yield return new WaitForSeconds(0.6f);
+        if (!isDefending) characterSprite.color = Color.white;
+        else SetDefense(true); // 방어 중이면 파란색 유지
     }
 
     IEnumerator FlyAwayRoutine()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6180102094719760276}
   - component: {fileID: 5928122996805401576}
   - component: {fileID: 8451265401572668337}
+  - component: {fileID: 3405918011696308034}
   m_Layer: 0
   m_Name: enemy_seal
   m_TagString: Untagged
@@ -106,6 +107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAppearing
   slotMachine: {fileID: 0}
   appearSpeed: 2
+  rotationSpeed: 5
 --- !u!61 &8451265401572668337
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -152,3 +154,21 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.97, y: 0.82}
   m_EdgeRadius: 0
+--- !u!114 &3405918011696308034
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3786549100428896970}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c84ce97fdd6d104cbcb96b972713bfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyHP
+  heartPrefab: {fileID: 2158893647385656907, guid: 1ccfb2e535f3986438633d17b5aec11f, type: 3}
+  heartParent: {fileID: 0}
+  nameText: {fileID: 0}
+  enemyName: "\uBB3C\uBC94"
+  maxHP: 5
+  isDefending: 0

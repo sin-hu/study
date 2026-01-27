@@ -159,7 +159,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 437002562799721649}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.263823, y: 1.263823, z: 1.263823}
   m_ConstrainProportionsScale: 0
@@ -223,8 +223,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe8e2ddfafd558a4fa0d4d3ff5596a78, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SlotManager
-  actionText: {fileID: 3038433219948643906}
-  targetText: {fileID: 7049872585150680805}
+  slotMachineBody: {fileID: 6645793035891922599}
+  idleSprite: {fileID: -9191223141548314184, guid: dc4dbcd7e7bac854c95517a9d97f17b0, type: 3}
+  spinningSprite: {fileID: -3959686423698661822, guid: dc4dbcd7e7bac854c95517a9d97f17b0, type: 3}
+  actionSlotImage: {fileID: 7589937533752840306}
+  targetSlotImage: {fileID: 206806144050160745}
+  slotSprites:
+  - {fileID: 328424461437348283, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+  - {fileID: -4473117568106922897, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+  - {fileID: -3263400644206269425, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+  - {fileID: -4861897951893582032, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+  - {fileID: 6439140133724642897, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+  - {fileID: 6343292014184358821, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+  actionSlotButton: {fileID: 4340134415516053387}
+  targetSlotButton: {fileID: 8114763379442778426}
 --- !u!1 &5433594796071677317
 GameObject:
   m_ObjectHideFlags: 0

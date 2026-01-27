@@ -401,6 +401,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.x
       value: 53
       objectReference: {fileID: 0}
+    - target: {fileID: 2933664372246025890, guid: 3a19b5c1ce662a148808c3bb26a019fd, type: 3}
+      propertyPath: slotSprites.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2933664372246025890, guid: 3a19b5c1ce662a148808c3bb26a019fd, type: 3}
+      propertyPath: 'slotSprites.Array.data[1]'
+      value: 
+      objectReference: {fileID: -3263400644206269425, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+    - target: {fileID: 2933664372246025890, guid: 3a19b5c1ce662a148808c3bb26a019fd, type: 3}
+      propertyPath: 'slotSprites.Array.data[2]'
+      value: 
+      objectReference: {fileID: -4861897951893582032, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+    - target: {fileID: 2933664372246025890, guid: 3a19b5c1ce662a148808c3bb26a019fd, type: 3}
+      propertyPath: 'slotSprites.Array.data[3]'
+      value: 
+      objectReference: {fileID: 6439140133724642897, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
+    - target: {fileID: 2933664372246025890, guid: 3a19b5c1ce662a148808c3bb26a019fd, type: 3}
+      propertyPath: 'slotSprites.Array.data[4]'
+      value: 
+      objectReference: {fileID: 6343292014184358821, guid: 7c331de3579bda947b788bf16c141dba, type: 3}
     - target: {fileID: 3410370554522645301, guid: 3a19b5c1ce662a148808c3bb26a019fd, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

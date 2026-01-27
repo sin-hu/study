@@ -14,8 +14,8 @@ public class SlotManager : MonoBehaviour
     public Image actionSlotImage;
     public Image targetSlotImage;
 
-    [Header("슬롯 아이콘 리스트")]
-    // 순서: 0:공격, 1:방어, 2:뽀뽀, 3:친구맺기, 4:너, 5:나
+    [Header("슬롯 아이콘 리스트 (Size: 5)")]
+    // 순서: 0:공격, 1:뽀뽀, 2:친구맺기, 3:너, 4:나
     public List<Sprite> slotSprites; 
 
     [Header("슬롯 버튼 연결")]
@@ -32,11 +32,10 @@ public class SlotManager : MonoBehaviour
 
     public void ResetSlots()
     {
-        // 초기화 시 기본 아이콘 (예: 공격 또는 별도의 초기 이미지)
-        actionSlotImage.sprite = slotSprites[0];
-        targetSlotImage.sprite = slotSprites[4]; // '너'
+        if (slotSprites.Count > 0) actionSlotImage.sprite = slotSprites[0];
+        if (slotSprites.Count > 3) targetSlotImage.sprite = slotSprites[3]; // '너'
+        
         slotMachineBody.sprite = idleSprite;
-
         actionSelected = false;
         targetSelected = false;
 
@@ -69,13 +68,13 @@ public class SlotManager : MonoBehaviour
         float duration = 1.0f;
         float elapsed = 0f;
         while (elapsed < duration) {
-            int rand = Random.Range(0, 4); // 0(공격), 1(방어), 2(뽀뽀), 3(친구)
+            // 0(공격), 1(뽀뽀), 2(친구) 중에서 랜덤 선택
+            int rand = Random.Range(0, 3); 
             actionSlotImage.sprite = slotSprites[rand];
             
             if (rand == 0) finalAction = "ATTACK";
-            else if (rand == 1) finalAction = "DEFEND";
-            else if (rand == 2) finalAction = "KISS";
-            else if (rand == 3) finalAction = "FRIEND";
+            else if (rand == 1) finalAction = "KISS";
+            else if (rand == 2) finalAction = "FRIEND";
 
             elapsed += 0.1f;
             yield return new WaitForSeconds(0.1f);
@@ -93,9 +92,10 @@ public class SlotManager : MonoBehaviour
         float duration = 1.0f;
         float elapsed = 0f;
         while (elapsed < duration) {
-            int rand = Random.Range(4, 6); // 4(너), 5(나)
+            // 3(너), 4(나) 중에서 랜덤 선택
+            int rand = Random.Range(3, 5); 
             targetSlotImage.sprite = slotSprites[rand];
-            finalTarget = (rand == 4) ? "YOU" : "ME";
+            finalTarget = (rand == 3) ? "YOU" : "ME";
 
             elapsed += 0.1f;
             yield return new WaitForSeconds(0.1f);

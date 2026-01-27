@@ -366,7 +366,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 5.0514755, y: 0.23602271}
+  m_Offset: {x: 5.0514755, y: -0.37082124}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -376,7 +376,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 2.471571, y: 0.41395807}
+  m_Size: {x: 2.471571, y: 0.25835752}
   m_EdgeRadius: 0
 --- !u!4 &281529906
 Transform:
@@ -1549,16 +1549,12 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 3405918011696308034, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: maxHP
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3405918011696308034, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
       propertyPath: nameText
       value: 
       objectReference: {fileID: 1676590176}
     - target: {fileID: 3405918011696308034, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
       propertyPath: enemyName
-      value: shark
+      value: Leopard seal
       objectReference: {fileID: 0}
     - target: {fileID: 3405918011696308034, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
       propertyPath: heartParent
@@ -1566,7 +1562,7 @@ PrefabInstance:
       objectReference: {fileID: 546205441}
     - target: {fileID: 3786549100428896970, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
       propertyPath: m_Name
-      value: enemy_shark
+      value: enemy_seal
       objectReference: {fileID: 0}
     - target: {fileID: 3786549100428896970, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
       propertyPath: m_TagString
@@ -1612,34 +1608,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: 6180102094719760276, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -2735569546219293298, guid: 023a2d22b180c60408a5477ea070b9b4, type: 3}
-    - target: {fileID: 8451265401572668337, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_Size.x
-      value: 2.6157649
-      objectReference: {fileID: 0}
-    - target: {fileID: 8451265401572668337, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_Size.y
-      value: 1.0273781
-      objectReference: {fileID: 0}
-    - target: {fileID: 8451265401572668337, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_Offset.x
-      value: -0.3228824
-      objectReference: {fileID: 0}
-    - target: {fileID: 8451265401572668337, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_Offset.y
-      value: -0.034563288
-      objectReference: {fileID: 0}
-    - target: {fileID: 8451265401572668337, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.x
-      value: 3.48
-      objectReference: {fileID: 0}
-    - target: {fileID: 8451265401572668337, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
-      propertyPath: m_SpriteTilingProperty.oldSize.y
-      value: 1.6
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5928122996805401576, guid: b7ef757841b0fbd40a0b6ae923938782, type: 3}
     m_RemovedGameObjects: []
@@ -1667,8 +1635,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAppearing
   slotMachine: {fileID: 1539303445}
-  appearSpeed: 8
-  rotationSpeed: 8
+  appearSpeed: 5
+  rotationSpeed: 5
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
